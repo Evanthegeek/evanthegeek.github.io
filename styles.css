@@ -1,0 +1,2021 @@
+/* ==========================================================================
+   Developer Portfolio — gold-on-black theme, cloned from the Abhijeet Bhale
+   template (green accent #1DCD9F replaced with a muted gold family).
+   Dark theme is the default; light theme is defined via [data-theme="light"].
+   Palette: jet and pure black backgrounds (#000 / #030303) with silver and
+   white; gold is reserved for foregrounds — text, outlines, accents. The
+   hero keeps a silver/white animated wave field with gold heading text.
+   Gradients are used sparingly, and always tied to motion or the mouse:
+   the hero's bottom fade, each section title's drawn-on underline, and the
+   thin gold ring that follows the cursor around the edges of cards on hover.
+   Section seams blend with black-only tone ramps and a soft shadow, and the
+   seam lines light up silver when you hover into a section (never the bio).
+   ========================================================================== */
+
+/* ---------- Design tokens ---------- */
+
+:root,
+[data-theme="dark"] {
+  --gold: #b08d30;
+  --gold-strong: #c9a94d;
+  --gold-deep: #8a6c21;
+  --gold-ink: #141210;          /* text/icon color on gold fills */
+  --gold-glow: rgba(176, 141, 48, 0.30);
+  --gold-stroke: rgba(176, 141, 48, 0.75);  /* name-reveal outline */
+  --terminal: #d9ae4f;   /* amber terminal text for the typing roles */
+
+  --bg: #000000;          /* deepest sections (hero, about, tech, projects) */
+  --bg-alt: #030303;      /* slightly lighter sections (github, contact form) */
+  --surface: #000000;     /* cards are pitch black */
+  --surface-2: #030303;   /* nested rows / small surfaces */
+
+  --seam-shadow: rgba(0, 0, 0, 0.6);     /* black-only blend at section seams */
+  --seam-hover: rgba(228, 230, 238, 0.5); /* silver seam lines, shown on hover */
+
+  --text: #ffffff;
+  --text-soft: #d1d5db;
+  --text-muted: #9ca3af;
+
+  --border: rgba(176, 141, 48, 0.28);
+  --border-weak: rgba(255, 255, 255, 0.1);
+
+  --social-bg: #ffffff;
+  --social-icon: #1a1a1a;
+
+  --field-bg: #0a0a0a;
+  --input-border: rgba(255, 255, 255, 0.18);
+
+  --card-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+  --card-glow: 0 0 0 1px var(--gold), 0 0 32px rgba(176, 141, 48, 0.22);
+
+  --loading-letter: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] {
+  --gold: #96762a;
+  --gold-strong: #a37f2c;
+  --gold-deep: #7a5e19;
+  --gold-ink: #141210;
+  --gold-glow: rgba(150, 118, 42, 0.24);
+  --gold-stroke: rgba(150, 118, 42, 0.75);  /* name-reveal outline */
+  --terminal: #7a5e19;   /* amber terminal text for the typing roles */
+
+  --bg: #f5f1e8;
+  --bg-alt: #ece5d8;
+  --surface: #ffffff;
+  --surface-2: #faf7f0;
+
+  --seam-shadow: rgba(0, 0, 0, 0.18);   /* black-only blend at section seams */
+  --seam-hover: rgba(95, 98, 108, 0.42); /* silver seam lines, shown on hover */
+
+  --text: #1a1a1a;
+  --text-soft: #44403a;
+  --text-muted: #5f594c;   /* darker taupe so secondary text stays legible on cream */
+
+  --border: rgba(122, 94, 25, 0.34);
+  --border-weak: rgba(26, 26, 26, 0.12);
+
+  --social-bg: #1a1a1a;
+  --social-icon: #ffffff;
+
+  --field-bg: #ffffff;
+  --input-border: #d1c9b6;
+
+  --card-shadow: 0 18px 45px rgba(90, 74, 40, 0.18);
+  --card-glow: 0 0 0 1px var(--gold), 0 0 28px rgba(150, 118, 42, 0.18);
+
+  --loading-letter: rgba(26, 26, 26, 0.08);
+}
+
+/* ---------- Reset & base ---------- */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 24px;
+  /* The template hides scrollbars (the gold progress bar on the right edge
+     replaces them). Hide at the root too, otherwise the viewport scrollbar
+     shows through as a grey bar in the light theme. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  scrollbar-width: none;          /* template hides scrollbars */
+  -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar,
+div::-webkit-scrollbar {
+  display: none;
+}
+
+/* The hidden attribute must always win over display rules set below. */
+[hidden] {
+  display: none !important;
+}
+
+a {
+  text-decoration: none;
+  color: var(--text);
+}
+
+button {
+  font-family: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+.accent {
+  color: var(--gold);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mb-12 {
+  margin-bottom: 3rem;
+}
+
+.text-white {
+  color: var(--text);
+}
+
+.me-2 {
+  margin-right: 0.5rem;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  top: -48px;
+  left: 12px;
+  background: var(--gold);
+  color: var(--gold-ink);
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: 8px;
+  z-index: 10000;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ---------- Loading screen ---------- */
+
+#loading {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.7s ease, visibility 0.7s ease, filter 0.7s ease;
+}
+
+#loading.done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  filter: blur(10px);   /* the page dissolves in softly behind the word */
+}
+
+.loading-text {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.04em;   /* Iceberg is condensed; give the letters room to breathe */
+}
+
+.loading-text span {
+  font-family: "Iceberg", "Special Gothic Expanded One", sans-serif;
+  font-size: clamp(56px, 13vw, 150px);
+  line-height: 1.1;
+  color: var(--loading-letter);
+  position: relative;
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(64px) scale(0.9);
+  animation:
+    letterReveal 1.35s cubic-bezier(0.22, 1.2, 0.36, 1) var(--d, 0s) forwards,
+    letterFloat 3.6s ease-in-out calc(var(--d, 0s) + 1.45s) infinite;
+}
+
+.loading-text span::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--gold);
+  text-shadow: 0 0 30px var(--gold-glow);
+  opacity: 0;
+  animation:
+    letterGlow 1.1s ease calc(var(--d, 0s) + 0.35s) forwards,
+    glowPulse 3.4s ease-in-out calc(var(--d, 0s) + 1.5s) infinite;
+}
+
+/* Longer usernames use a smaller font so the letters aren't cut off. */
+.loading-text.is-long span {
+  font-size: clamp(30px, 6.5vw, 84px);
+}
+
+/* Letters rise up with a springy overshoot and a small random tilt, then a
+   gentle wave travels along the word as each letter floats in sequence. */
+@keyframes letterReveal {
+  0% { opacity: 0; transform: translateY(64px) scale(0.9) rotate(var(--tilt, 0deg)); }
+  55% { opacity: 1; }
+  75% { transform: translateY(-7px) scale(1.04) rotate(0deg); }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+}
+
+@keyframes letterFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-11px) rotate(calc(var(--tilt, 0deg) * 0.4)); }
+}
+
+@keyframes letterGlow {
+  0% { opacity: 0; }
+  40% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+/* After each letter lights up, its gold glow keeps breathing gently. */
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+
+/* Final flourish: the whole username swells up large for the last moment,
+   then the loader fades out while it stays expanded. */
+.loading-text.expand {
+  animation: loaderExpand 1.15s cubic-bezier(0.22, 1.2, 0.36, 1) forwards;
+}
+
+@keyframes loaderExpand {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.35); }
+}
+
+/* ---------- Scroll progress bar (right edge) ---------- */
+
+.scroll-bar {
+  position: fixed;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 16rem;
+  width: 4px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  z-index: 90;
+  cursor: pointer;
+}
+
+#scroll-indicator {
+  height: 0;
+  width: 100%;
+  border-radius: 999px;
+  background: var(--gold);
+  box-shadow: 0 0 10px var(--gold-glow);
+  transition: height 0.15s linear;
+}
+
+/* ---------- Fixed email (left edge) ---------- */
+
+.fixed-email {
+  position: fixed;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+  font-family: "Special Gothic Expanded One", sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 3px;
+  color: var(--gold);
+  padding: 6px;
+  z-index: 90;
+  transition: color 0.3s ease;
+}
+
+.fixed-email:hover {
+  color: var(--gold-strong);
+}
+
+/* ---------- Theme toggle ---------- */
+
+.theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 120;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px var(--gold-glow);
+}
+
+.theme-toggle svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-toggle .icon-moon {
+  display: none;
+}
+
+[data-theme="light"] .theme-toggle .icon-sun {
+  display: none;
+}
+
+[data-theme="light"] .theme-toggle .icon-moon {
+  display: block;
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+  position: relative;
+  min-height: 104vh;   /* runs a beat past the fold so the waves carry into the scroll */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg);
+  overflow: hidden;
+  padding: 4rem 1.5rem;
+}
+
+/* Bottom fade: the animated wave field dissolves into the next section's
+   colour instead of stopping at a hard edge. Sits above the canvas but
+   below the hero content. */
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 24%;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+  z-index: 1;
+  pointer-events: none;
+}
+
+.line-waves {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.line-waves canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  animation: heroIn 1s ease 0.15s both;
+  /* Translucent scrim that hugs the hero text: a barely-visible rounded
+     block that dims the animated waves just enough to keep the headline
+     readable, while the rest of the hero effect stays fully visible.
+     The fill follows the theme (black in dark, cream in light) so the
+     block stays subtle in both. */
+  background: color-mix(in srgb, var(--bg) 45%, transparent);
+  border: 1px solid var(--border-weak);
+  border-radius: 24px;
+  padding: 2.2rem 2.8rem;
+}
+
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-heading {
+  font-family: "Special Gothic Expanded One", sans-serif;
+  font-size: clamp(1.6rem, 5.5vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1.15;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+/* "Hey, I'm" — the white heading text is ringed by a gold outline so the
+   whole header reads as white-and-gold. */
+.hero-heading .text-white {
+  -webkit-text-stroke: 2px color-mix(in srgb, var(--gold) 45%, transparent);
+  paint-order: stroke fill;
+}
+
+.name-button {
+  margin: 0;
+  height: auto;
+  background: transparent;
+  padding: 0;
+  border: none;
+  cursor: default;
+  --text-stroke-color: var(--gold-stroke);
+  --animation-color: var(--gold-strong);  /* gold fill sweeps over the outline */
+  --fs-size: 1em;
+  letter-spacing: 3px;
+  font-size: var(--fs-size);
+  font-family: "Special Gothic Expanded One", sans-serif;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 3px var(--text-stroke-color);
+  position: relative;
+  display: inline-block;
+}
+
+.hover-text {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  color: var(--animation-color);
+  width: 0%;
+  overflow: hidden;
+  transition: width 0.55s ease;
+  -webkit-text-stroke: 3px var(--animation-color);
+  white-space: nowrap;
+}
+
+/* The reveal's leading edge is a thin vertical line in the same tapered
+   gold gradient as the name's own fill (soft ends, strong middle), so it
+   reads as a gold pen tip drawing the name in. */
+.hover-text::after {
+  content: "";
+  position: absolute;
+  top: 2%;
+  bottom: 2%;
+  right: 0;
+  width: 3px;
+  background: linear-gradient(180deg,
+    transparent 0%, var(--gold) 20%, var(--gold-strong) 50%,
+    var(--gold) 80%, transparent 100%);
+  pointer-events: none;
+}
+
+.name-button:hover .hover-text {
+  width: 100%;
+  filter: drop-shadow(0 0 16px var(--gold-glow));
+}
+
+/* The typed role line reads like a terminal prompt: amber monospace text
+   with a faint CRT glow. */
+.hero-lead {
+  font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: clamp(0.98rem, 1.9vw, 1.15rem);
+  font-weight: 500;
+  color: var(--terminal);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--terminal) 45%, transparent);
+  max-width: 640px;
+  margin: 1.6rem auto 2.4rem;
+  min-height: 1.7em; /* reserve space for the typing caret */
+}
+
+/* Terminal-style block cursor shown at the end of the typed role. */
+.type-caret {
+  display: inline-block;
+  width: 0.6em;          /* one monospace character cell */
+  height: 1.15em;
+  margin-left: 3px;
+  vertical-align: -0.2em;
+  background: var(--terminal);
+  border-radius: 1px;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--terminal) 60%, transparent);
+  animation: caret-blink 1.1s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .type-caret { animation: none; }
+}
+
+/* Hero CTA — gold outline (gold lives on the hero's foregrounds). */
+.shadow-btn {
+  display: inline-block;
+  padding: 14px 34px;
+  border: 1px solid var(--gold);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gold-strong);
+  background: transparent;
+  border-radius: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+}
+
+.shadow-btn:hover {
+  background: var(--gold-glow);
+  border-color: var(--gold-strong);
+  transform: translateY(-2px);
+}
+
+/* ---------- Sections ---------- */
+
+.section {
+  position: relative;
+  padding: 5.5rem 1.5rem;
+  /* Black-only blend at the top seam: a soft shadow darkens the section's
+     first ~28px so adjoining sections melt together with no colour. */
+  box-shadow: inset 0 26px 30px -28px var(--seam-shadow);
+}
+
+/* Silver seam lines: the boundaries between this section and its neighbours
+   light up when you hover into the section. Hidden by default; the bio
+   section never shows them (see .section-about below). */
+.section::before,
+.section::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--seam-hover);
+  box-shadow: 0 0 12px 1px var(--seam-hover), 0 0 26px 3px var(--seam-hover);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.section::before {
+  top: 0;
+}
+
+.section::after {
+  bottom: 0;
+}
+
+.section:hover::before,
+.section:hover::after {
+  opacity: 1;
+}
+
+/* The bio section gets no hover seam glow at all. */
+.section-about::before,
+.section-about::after {
+  display: none;
+}
+
+.section-title {
+  font-family: "Special Gothic Expanded One", sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  text-align: center;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+/* The underline under each section title is a soft gold gradient that draws
+   itself on (left to right) once the title scrolls into view. Its ends are
+   masked away so it reads like a smooth pen stroke rather than a flat bar. */
+.section-title::after {
+  content: "";
+  display: block;
+  width: 96px;
+  height: 3px;
+  margin: 0.9rem auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg,
+    var(--gold-deep), var(--gold) 28%, var(--gold-strong) 50%,
+    var(--gold) 72%, var(--gold-deep));
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+}
+
+/* Draw the line once the title (or its .reveal wrapper) becomes visible. */
+.section-title.is-visible::after,
+.is-visible .section-title::after {
+  transform: scaleX(1);
+}
+
+.section-sub {
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 1.05rem;
+  margin-bottom: 2.5rem;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--gold-ink);
+}
+
+.btn-gold:hover {
+  background: var(--gold-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px var(--gold-glow);
+}
+
+.btn-ghost {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: transparent;
+}
+
+.btn-ghost:hover {
+  background: rgba(176, 141, 48, 0.07);
+}
+
+[data-theme="light"] .btn-ghost:hover {
+  background: rgba(150, 118, 42, 0.09);
+}
+
+/* Light theme: the amber CRT glow smudges on cream, so the terminal text and
+   caret go crisp (plain colour, no halo), and the hero CTA uses the deeper
+   gold so its small uppercase text stays legible. */
+[data-theme="light"] .hero-lead,
+[data-theme="light"] .about-heading #about-role {
+  text-shadow: none;
+}
+
+[data-theme="light"] .type-caret {
+  box-shadow: none;
+}
+
+[data-theme="light"] .shadow-btn {
+  color: var(--gold-deep);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* ---------- About ---------- */
+
+.section-about {
+  background: var(--bg);
+}
+
+.about-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 3.5rem;
+}
+
+.about-photo {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.photo-frame {
+  width: clamp(200px, 30vw, 264px);
+  height: clamp(200px, 30vw, 264px);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
+  filter: grayscale(100%);
+  transition: filter 0.5s ease, box-shadow 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-frame:hover {
+  filter: grayscale(0%);
+  box-shadow: var(--card-glow);
+}
+
+.photo-placeholder {
+  font-family: "Special Gothic Expanded One", sans-serif;
+  font-size: 4.2rem;
+  color: var(--gold);
+}
+
+.photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.about-text {
+  flex: 1 1 420px;
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .about-text {
+    text-align: left;
+  }
+}
+
+.about-heading {
+  font-size: clamp(1.35rem, 3vw, 1.95rem);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+  margin-bottom: 1.2rem;
+}
+
+/* The typed role inside the About heading gets the same amber terminal
+   style as the hero subheader (the two are driven in sync). */
+.about-heading #about-role {
+  font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-weight: 500;
+  color: var(--terminal);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--terminal) 35%, transparent);
+}
+
+.about-bio {
+  color: var(--text-soft);
+  line-height: 1.75;
+  max-width: 60ch;
+  margin: 0 auto;
+}
+
+@media (min-width: 900px) {
+  .about-bio {
+    margin: 0;
+  }
+}
+
+[contenteditable="true"] {
+  outline: 2px dashed var(--gold);
+  outline-offset: 4px;
+  border-radius: 6px;
+  background: rgba(176, 141, 48, 0.045);
+}
+
+/* Social icons */
+
+.social-icons {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 1.8rem 0 0;
+  padding: 0;
+}
+
+@media (min-width: 900px) {
+  .social-icons {
+    justify-content: flex-start;
+  }
+}
+
+.social-icons .icon-content {
+  position: relative;
+}
+
+.social-icons .icon-content a {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--social-bg);
+  color: var(--social-icon);
+  transition: all 0.3s ease-in-out;
+}
+
+.social-icons .icon-content a svg {
+  position: relative;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.social-icons .icon-content a .filled {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: var(--gold);
+  transition: height 0.3s ease-in-out;
+}
+
+.social-icons .icon-content a:hover {
+  color: var(--gold-ink);
+}
+
+.social-icons .icon-content a:hover .filled {
+  height: 100%;
+}
+
+.social-icons .icon-content .tooltip {
+  position: absolute;
+  bottom: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--gold-ink);
+  background: var(--gold);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.social-icons .icon-content:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  bottom: -42px;
+}
+
+/* ---------- Journey / timeline ---------- */
+
+.section-journey {
+  background: var(--bg);
+}
+
+.journey-inner {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.journey-inner .section-title {
+  margin-bottom: 3.5rem;
+}
+
+.timeline {
+  position: relative;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--gold);
+  border-radius: 999px;
+}
+
+.timeline-row {
+  position: relative;
+  width: 50%;
+  margin-bottom: 3rem;
+}
+
+.timeline-row-left .timeline-card-wrap {
+  padding-right: 2.75rem;
+}
+
+.timeline-row-right {
+  margin-left: 50%;
+}
+
+.timeline-row-right .timeline-card-wrap {
+  padding-left: 2.75rem;
+}
+
+.timeline-dot {
+  position: absolute;
+  top: 1.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 4px rgba(176, 141, 48, 0.13), 0 0 16px var(--gold-glow);
+  z-index: 2;
+}
+
+.timeline-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeline-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--card-glow);
+}
+
+.timeline-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.timeline-date {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0.4rem 0 0.7rem;
+}
+
+.timeline-text {
+  color: var(--text-soft);
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .timeline-line,
+  .timeline-dot {
+    display: none;
+  }
+
+  .timeline-row,
+  .timeline-row-right {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .timeline-row-left .timeline-card-wrap,
+  .timeline-row-right .timeline-card-wrap {
+    padding: 0;
+  }
+}
+
+/* ---------- Tech stack ---------- */
+
+.section-tech {
+  /* Bottom 8rem ramps into the lighter GitHub section below. */
+  background: linear-gradient(to bottom,
+    var(--bg) 0,
+    var(--bg) calc(100% - 8rem),
+    var(--bg-alt) 100%);
+}
+
+.tech-inner {
+  max-width: 1050px;
+  margin: 0 auto;
+}
+
+.tech-category {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 1.75rem;
+  margin-bottom: 2.75rem;
+}
+
+.tech-label {
+  font-family: "Special Gothic Expanded One", sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 3px;
+  color: var(--text-muted);
+  padding-top: 0.6rem;
+  position: sticky;
+  top: 20px;
+  transition: color 0.3s ease;
+}
+
+.tech-label:hover {
+  color: var(--text);
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.9rem;
+}
+
+.tech-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
+}
+
+.tech-item:hover {
+  border-color: var(--border);
+  color: var(--text);
+  transform: translateY(-2px);
+}
+
+.tech-item img {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+/* Dark-on-dark devicon logos get a white chip so they stay visible; on the
+   cream light theme the logos are already dark so no chip is needed. */
+[data-theme="dark"] .tech-item img[src*="github"],
+[data-theme="dark"] .tech-item img[src*="express"],
+[data-theme="dark"] .tech-item img[src*="fastapi"],
+[data-theme="dark"] .tech-item img[src*="amazonwebservices"],
+[data-theme="dark"] .tech-item img[src*="nextjs"],
+[data-theme="dark"] .tech-item img[src*="unity"],
+[data-theme="dark"] .tech-item img[src*="unrealengine"] {
+  background: #ffffff;
+  border-radius: 4px;
+  padding: 2px;
+}
+
+@media (max-width: 700px) {
+  .tech-category {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+
+  .tech-label {
+    position: static;
+    border-bottom: 2px solid var(--gold);
+    display: inline-block;
+    padding-bottom: 0.3rem;
+  }
+}
+
+/* ---------- GitHub activity ---------- */
+
+.section-github {
+  /* Bottom 8rem ramps back into the pure-black projects section below. */
+  background: linear-gradient(to bottom,
+    var(--bg-alt) 0,
+    var(--bg-alt) calc(100% - 8rem),
+    var(--bg) 100%);
+}
+
+.github-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.github-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.github-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border-weak);
+  border-radius: 16px;
+  padding: 1.6rem 1rem;
+  text-align: center;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.github-stat-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.github-stat-value {
+  font-family: "Special Gothic Expanded One", sans-serif;
+  font-size: 1.9rem;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+}
+
+.github-stat-label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.github-panel {
+  background: var(--surface);
+  border: 1px solid var(--border-weak);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.github-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.github-panel-head h3 {
+  font-size: 1.2rem;
+}
+
+.github-profile-link {
+  color: var(--gold);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.github-profile-link:hover {
+  color: var(--gold-strong);
+}
+
+/* Recent activity: an editorial feed instead of the template's icon circles —
+   each row is a small gold diamond, the event text, a type tag + date, and an
+   Open link, separated by hairline rules. */
+.github-activity {
+  display: flex;
+  flex-direction: column;
+}
+
+.gh-activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 0.95rem 0.4rem;
+  background: transparent;
+}
+
+.gh-activity-item + .gh-activity-item {
+  border-top: 1px solid var(--border-weak);
+}
+
+.gh-activity-dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 0.32em;
+  flex-shrink: 0;
+  border: 1px solid var(--gold);
+  transform: rotate(45deg);
+  transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.gh-activity-item:hover .gh-activity-dot {
+  background: var(--gold);
+  box-shadow: 0 0 10px var(--gold-glow);
+}
+
+.gh-activity-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.gh-activity-text {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.gh-activity-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.35rem;
+}
+
+.gh-activity-type {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.08rem 0.55rem;
+}
+
+.gh-activity-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.gh-activity-link {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+  transition: color 0.25s ease;
+}
+
+.gh-activity-link:hover {
+  color: var(--gold-strong);
+}
+
+.github-languages-head {
+  text-align: center;
+  margin-top: 2.5rem;
+}
+
+.github-languages-head h3 {
+  font-size: 1.2rem;
+}
+
+.github-languages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.github-lang-card {
+  background: var(--surface);
+  border: 1px solid var(--border-weak);
+  border-radius: 14px;
+  padding: 1.3rem 1rem;
+  text-align: center;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.github-lang-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+}
+
+.github-lang-name {
+  font-family: "Special Gothic Expanded One", sans-serif;
+  font-size: 1.25rem;
+  color: var(--gold);
+  margin-bottom: 0.3rem;
+}
+
+.github-lang-count {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.github-placeholder {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 1rem 0;
+}
+
+/* ---------- Projects ---------- */
+
+.section-projects {
+  position: relative;
+  /* Bottom 8rem ramps into the lighter contact-form section below. */
+  background: linear-gradient(to bottom,
+    var(--bg) 0,
+    var(--bg) calc(100% - 8rem),
+    var(--bg-alt) 100%);
+  overflow: hidden;
+}
+
+.particles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.particles canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.projects-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1050px;
+  margin: 0 auto;
+}
+
+.projects-notice {
+  max-width: 720px;
+  margin: 0 auto 1.75rem;
+  text-align: center;
+  background: rgba(176, 141, 48, 0.06);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+  border-radius: 10px;
+  padding: 0.9rem 1.2rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+[data-theme="light"] .projects-notice {
+  background: rgba(150, 118, 42, 0.06);
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 800px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.project-card {
+  background: #ffffff;
+  color: #111111;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+  position: relative;
+  transform: translateZ(0);
+  transition: transform 0.3s ease, box-shadow 0.35s ease;
+  will-change: transform;
+}
+
+.project-card:hover {
+  transform: scale(1.02);
+  box-shadow: var(--card-glow);
+}
+
+/* ---------- Mouse-following card glow (edge only) ---------- */
+/* Any card with .glow-card gets a thin ring whose gold gradient follows the
+   cursor (script.js tracks --mx/--my per card). The ring is a 1.5px band on
+   the outline only — the interior of the card stays untouched. */
+.glow-card {
+  position: relative;
+}
+
+.glow-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  border-radius: inherit;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%),
+              var(--gold), var(--gold-glow) 24%, transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.glow-card:hover::before {
+  opacity: 1;
+}
+
+.project-media {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+  background: var(--gold);
+}
+
+.project-media-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.project-monogram {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Special Gothic Expanded One", sans-serif;
+  font-size: 3.4rem;
+  color: var(--gold-ink);
+  background: var(--gold);
+}
+
+.project-body {
+  padding: 1.5rem 1.5rem 0.4rem;
+}
+
+.project-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #111111;
+}
+
+.project-desc {
+  color: #4b5563;
+  line-height: 1.65;
+  margin: 0.65rem 0 1rem;
+  font-size: 0.95rem;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.1rem;
+}
+
+.project-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f3f4f6;
+  color: #374151;
+  border-radius: 8px;
+  padding: 0.32rem 0.7rem;
+  font-size: 0.78rem;
+}
+
+.project-tag img {
+  width: 15px;
+  height: 15px;
+}
+
+.project-tag img[src*="github"],
+.project-tag img[src*="express"],
+.project-tag img[src*="nextjs"] {
+  background: #ffffff;
+  border-radius: 3px;
+  padding: 1px;
+}
+
+.project-foot {
+  border-top: 1px solid #e5e7eb;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.project-link-live,
+.project-link-source {
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.project-link-live {
+  background: var(--gold);
+  color: var(--gold-ink);
+}
+
+.project-link-live:hover {
+  background: var(--gold-strong);
+  transform: translateY(-1px);
+}
+
+.project-link-source {
+  background: #1f2937;
+  color: #ffffff;
+}
+
+.project-link-source:hover {
+  background: #374151;
+  transform: translateY(-1px);
+}
+
+/* Pitch-black project cards in the dark theme (light theme keeps its light
+   cards so the cream sections stay readable). */
+[data-theme="dark"] .project-card {
+  background: #000000;
+  color: var(--text-soft);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+[data-theme="dark"] .project-card .project-title {
+  color: var(--text);
+}
+
+[data-theme="dark"] .project-card .project-desc {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .project-card .project-tag {
+  background: #030303;
+  color: var(--text-soft);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .project-card .project-foot {
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .project-card .project-link-source {
+  background: #030303;
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+[data-theme="dark"] .project-card .project-link-source:hover {
+  background: #141414;
+}
+
+.projects-empty {
+  text-align: center;
+  padding: 3.5rem 1rem 2rem;
+}
+
+.empty-title {
+  font-family: "Special Gothic Expanded One", sans-serif;
+  font-size: 1.5rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.empty-text {
+  color: var(--text-muted);
+  max-width: 560px;
+  margin: 0 auto 1.75rem;
+  line-height: 1.7;
+}
+
+/* ---------- Contact form ---------- */
+
+.section-contact-form {
+  /* Bottom 8rem ramps back into the pure-black contact section below. */
+  background: linear-gradient(to bottom,
+    var(--bg-alt) 0,
+    var(--bg-alt) calc(100% - 8rem),
+    var(--bg) 100%);
+}
+
+.contact-form-inner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+@media (min-width: 860px) {
+  .contact-grid {
+    grid-template-columns: 1fr 1.1fr;
+  }
+}
+
+.contact-info h3 {
+  font-size: 1.45rem;
+  margin-bottom: 1rem;
+}
+
+.contact-info-text {
+  color: var(--text-soft);
+  line-height: 1.7;
+  margin-bottom: 1.2rem;
+}
+
+.contact-info-cta {
+  color: var(--gold);
+  font-weight: 600;
+  line-height: 1.7;
+  margin-bottom: 1.9rem;
+  border-left: 2px solid var(--gold);
+  padding-left: 1rem;
+}
+
+.contact-detail {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.3rem;
+}
+
+.contact-detail-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--gold-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contact-detail-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.contact-detail-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.contact-detail-value {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.contact-form-card {
+  background: var(--surface);
+  border-radius: 18px;
+  padding: 2rem;
+  box-shadow: var(--card-shadow);
+}
+
+[data-theme="dark"] .contact-form-card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+}
+
+@media (min-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.form-field {
+  margin-bottom: 1.1rem;
+}
+
+.form-field label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.45rem;
+}
+
+.required {
+  color: #e05252;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  background: var(--field-bg);
+  color: var(--text);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.95rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+}
+
+.field-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+}
+
+.form-field textarea {
+  resize: vertical;
+}
+
+.form-field input.is-error,
+.form-field textarea.is-error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.form-field input.is-valid,
+.form-field textarea.is-valid {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+}
+
+.validation-error {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 0.4rem;
+  line-height: 1.45;
+}
+
+.validation-success {
+  color: #22c55e;
+  font-size: 0.8rem;
+  margin-top: 0.4rem;
+}
+
+.form-message {
+  margin-top: 1rem;
+  padding: 0.95rem 1.15rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.form-message.success {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: #22c55e;
+}
+
+.form-message.error {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+
+.form-message a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* ---------- Contact ---------- */
+
+.section-contact {
+  /* Bottom 8rem ramps into the lighter footer below. */
+  background: linear-gradient(to bottom,
+    var(--bg) 0,
+    var(--bg) calc(100% - 8rem),
+    var(--bg-alt) 100%);
+}
+
+.contact-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contact-email {
+  font-family: "Special Gothic Expanded One", sans-serif;
+  font-size: clamp(1.25rem, 4vw, 2.3rem);
+  color: var(--text);
+  transition: color 0.3s ease;
+  margin: 0.9rem 0 1.9rem;
+}
+
+.contact-email:hover {
+  color: var(--gold);
+}
+
+.contact-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem;
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  position: relative;
+  background: var(--bg-alt);
+  padding: 1.6rem 1.5rem;
+}
+
+.footer-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* ---------- Back to top ---------- */
+
+.wrapper {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000;
+}
+
+.back2top-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 4px rgba(176, 141, 48, 0.11);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+}
+
+.back2top-button.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back2top-button:hover {
+  width: 150px;
+  border-radius: 50px;
+  background: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(176, 141, 48, 0.22);
+}
+
+.svgIcon {
+  width: 13px;
+  transition: transform 0.3s ease;
+}
+
+.back2top-button:hover .svgIcon {
+  transform: translateY(-230%);
+}
+
+.svgIcon path {
+  fill: var(--text);
+}
+
+.back2top-button:hover .svgIcon path {
+  fill: var(--gold-ink);
+}
+
+.button-label {
+  position: absolute;
+  bottom: -20px;
+  color: var(--gold-ink);
+  font-size: 0px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.back2top-button:hover .button-label {
+  font-size: 13px;
+  opacity: 1;
+  bottom: unset;
+}
+
+/* ---------- Scroll reveal ---------- */
+/* Elements with .reveal fade in as you scroll to them. Directional variants
+   (left/right/zoom/down) pick a starting offset, and --reveal-delay staggers
+   grouped elements. JS removes .reveal after the entrance finishes so each
+   element's own transitions (e.g. project-card hover) work normally again. */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(5px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0s);
+  will-change: opacity, transform, filter;
+}
+
+.reveal-left {
+  transform: translateX(-52px);
+}
+
+.reveal-right {
+  transform: translateX(52px);
+}
+
+.reveal-zoom {
+  transform: scale(0.92);
+}
+
+.reveal-down {
+  transform: translateY(-28px);
+}
+
+.reveal.is-visible,
+.is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 700px) {
+  .hero-content {
+    padding: 1.5rem 1.2rem;
+    border-radius: 18px;
+  }
+
+  .scroll-bar,
+  .fixed-email {
+    display: none;
+  }
+
+  .theme-toggle {
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .section {
+    padding: 4rem 1.25rem;
+  }
+
+  .wrapper {
+    bottom: 20px;
+    right: 20px;
+  }
+}

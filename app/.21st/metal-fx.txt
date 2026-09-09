@@ -1,0 +1,92 @@
+# Liquid Metal — Chromatic composer
+Animated liquid-metal border effect (metal-fx). Wrap any element — a button, link, or icon — with a live metallic ring driven by a shared WebGL renderer. Three presets (chromatic, silver, gold), button and circle variants, adjustable strength, glow and proximity reflections, theme-aware (auto/dark/light).
+
+install: npx shadcn@latest add "https://21st.dev/r/larsen66/metal-fx?api_key=$API_KEY_21ST"
+
+## Component
+```tsx
+// Liquid Metal (metal-fx) — an animated metallic ring effect that wraps any
+// element, driven by a single shared WebGL renderer.
+//
+// Wrap a button, link, or icon with a live metal border:
+//   <MetalFx preset="chromatic" strength={1}>
+//     <button>Upgrade to Pro</button>
+//   </MetalFx>
+//
+// - preset:  'chromatic' | 'silver' | 'gold'   (each ships dark + light tunings)
+// - variant: 'button' (pill ring) | 'circle'   (compact circular ring)
+// - theme:   'auto' | 'dark' | 'light'
+// - strength (0..1), paused, disableGlow, reflectionTargets, borderRadius, …
+//
+// All visible instances share one offscreen GL canvas; each composites a
+// cropped copy onto its own 2D canvas with a rounded hole punched through.
+//
+// Source & playground: https://metal.jakubantalik.com
+import { MetalFx } from "metal-fx"
+
+export { MetalFx } from "metal-fx"
+export type {
+  MetalFxProps,
+  MetalFxPreset,
+  MetalFxVariant,
+  MetalFxTheme,
+} from "metal-fx"
+
+export default MetalFx
+
+```
+
+## Demo (usage)
+```tsx
+import { ArrowUp, ChevronDown, Plus } from "lucide-react"
+import { MetalFx } from "@/components/ui/metal-fx"
+
+// The canonical showcase: MetalFx on the send button of a chat composer,
+// alongside the other controls — exactly as on metal.jakubantalik.com.
+const chip =
+  "inline-flex items-center gap-1 h-9 rounded-full bg-white/[0.04] text-[#caccd2] text-xs leading-[14px] font-medium shadow-[inset_0_0_0_1px_#ffffff0d,inset_0_1px_0_0_#ffffff0a]"
+
+export default function MetalFxComposerDemo() {
+  return (
+    <div className="flex min-h-[440px] w-full items-center justify-center bg-[#070707] p-8">
+      <div className="flex w-[448px] max-w-full flex-col rounded-[20px] bg-[#1d1d1db3] px-4 pb-4 pt-5">
+        <textarea
+          rows={1}
+          readOnly
+          aria-label="Build anything..."
+          placeholder="Build anything..."
+          className="mb-4 w-full resize-none border-none bg-transparent p-0 text-sm leading-4 text-[#fbfbfb] outline-none placeholder:text-[#4e4e4e]"
+        />
+        <div className="mt-auto flex items-center gap-3">
+          <button
+            aria-label="Add"
+            className="flex size-9 min-w-9 items-center justify-center rounded-full bg-white/[0.04] text-[#caccd2] shadow-[inset_0_0_0_1px_#ffffff0d,inset_0_1px_0_0_#ffffff0a]"
+          >
+            <Plus className="size-4" />
+          </button>
+          <div className="flex-1" />
+          <button className={`${chip} pl-3.5 pr-2.5`}>
+            <span>Agent</span>
+            <ChevronDown className="size-4 text-[#8e8e8e]" />
+          </button>
+          <button className={`${chip} pl-3.5 pr-2.5`}>
+            <span>Auto</span>
+            <ChevronDown className="size-4 text-[#8e8e8e]" />
+          </button>
+          <MetalFx preset="chromatic" variant="circle" strength={1} theme="dark">
+            <button
+              aria-label="Send"
+              className="flex size-10 items-center justify-center rounded-full bg-[#1d1d1d] text-[#fbfbfb]"
+            >
+              <ArrowUp className="size-4" />
+            </button>
+          </MetalFx>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+```
+
+1 of 2 free component retrievals left today. A paid 21st plan makes it unlimited: https://21st.dev/pricing

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Personal developer portfolio. Explore projects, skills, and ways to get in touch.">
+  <title>Your Name — Developer Portfolio</title>
+  <script>
+    /* Set the theme before first paint to avoid flashing the wrong theme. */
+    (function () {
+      try {
+        var stored = localStorage.getItem("devfolio.theme");
+        var theme = stored || (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch (err) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;600;700&family=Special+Gothic+Expanded+One&family=Iceberg&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#about">Skip to content</a>
+
+  <!-- Loading Animation: letters are filled from your profile username by script.js -->
+  <div id="loading">
+    <div class="loading-text" id="name-loader" aria-hidden="true">
+      <span data-text="Y">Y</span>
+      <span data-text="O">O</span>
+      <span data-text="U">U</span>
+      <span data-text="R">R</span>
+      <span data-text="N">N</span>
+      <span data-text="A">A</span>
+      <span data-text="M">M</span>
+      <span data-text="E">E</span>
+    </div>
+  </div>
+
+  <!-- Scroll Progress Bar (right edge) -->
+  <div id="scroll-bar" class="scroll-bar" aria-hidden="true">
+    <div id="scroll-indicator"></div>
+  </div>
+
+  <!-- Fixed email on the left edge. Filled from profile.json. -->
+  <a class="fixed-email" href="mailto:you@example.com" title="Mail me">you@example.com</a>
+
+  <!-- Theme toggle, fixed top-right -->
+  <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light and dark theme">
+    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+  </button>
+
+  <main id="top">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <!-- Animated line-waves background -->
+      <div id="line-waves-container" class="line-waves" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <h1 class="hero-heading">
+          <span class="text-white me-2">Hey, I'm</span>
+          <button class="name-button" id="hero-name" type="button" data-text="YOUR NAME" tabindex="-1" aria-hidden="true">
+            <span class="actual-text">&nbsp;YOUR NAME&nbsp;</span>
+            <span class="hover-text" aria-hidden="true">&nbsp;YOUR NAME&nbsp;</span>
+          </button>
+        </h1>
+        <p class="hero-lead" id="hero-role">An aspiring developer building sleek web experiences.</p>
+        <a href="#projects" class="shadow-btn">View Projects</a>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section id="about" class="section section-about">
+      <div class="about-inner">
+        <!-- Profile photo, name, role and bio are filled from profile.json by
+             script.js. To change them, use the admin tool: run "node server.js"
+             and open http://localhost:3000/admin/ -->
+        <div class="about-photo">
+          <div class="photo-frame" id="photo-frame">
+            <span class="photo-placeholder" id="photo-placeholder" aria-hidden="true">YN</span>
+            <img class="photo-img" id="photo-img" alt="Your profile picture" hidden>
+          </div>
+        </div>
+
+        <div class="about-text" id="about-text">
+          <h2 class="about-heading">
+            I'm <span class="accent" id="about-name">Your Name</span>, a
+            <span class="accent" id="about-role">Software Engineer</span> focused on building
+            scalable, modern, and user-centric applications.
+          </h2>
+          <!-- This bio is filled from profile.json. Edit it with the admin tool. -->
+          <p class="about-bio" id="about-bio">Placeholder biography. Describe who you are, what you like to build, and the kind of problems you enjoy solving.</p>
+
+          <!-- Social icon links are filled from the socials field in profile.json. -->
+          <ul class="social-icons" aria-label="Social links">
+            <li class="icon-content">
+              <a href="https://www.instagram.com/" aria-label="Instagram" data-social="instagram" target="_blank" rel="noopener">
+                <span class="filled"></span>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M12 2.2c3.2 0 3.6 0 4.9.07 3.2.15 4.7 1.66 4.85 4.85.06 1.27.07 1.65.07 4.88s-.01 3.6-.07 4.88c-.15 3.18-1.65 4.7-4.85 4.85-1.27.06-1.64.07-4.88.07s-3.61-.01-4.88-.07c-3.2-.15-4.7-1.67-4.85-4.85C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.88C2.42 3.93 3.92 2.42 7.12 2.27 8.4 2.2 8.8 2.2 12 2.2zm0 3.6a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-10.5a1.45 1.45 0 1 0 0 2.9 1.45 1.45 0 0 0 0-2.9z"/>
+                </svg>
+              </a>
+              <span class="tooltip">Instagram</span>
+            </li>
+            <li class="icon-content">
+              <a href="https://www.linkedin.com/" aria-label="LinkedIn" data-social="linkedin" target="_blank" rel="noopener">
+                <span class="filled"></span>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.55V9h3.57v11.45z"/>
+                </svg>
+              </a>
+              <span class="tooltip">LinkedIn</span>
+            </li>
+            <li class="icon-content">
+              <a href="mailto:you@example.com" aria-label="Email" data-social="email">
+                <span class="filled"></span>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+              </a>
+              <span class="tooltip">Email</span>
+            </li>
+            <li class="icon-content">
+              <a href="https://github.com/" aria-label="GitHub" data-social="github" target="_blank" rel="noopener">
+                <span class="filled"></span>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.35.95.1-.74.4-1.25.72-1.53-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.35.78 1.05.78 2.12v3.14c0 .3.2.67.8.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
+                </svg>
+              </a>
+              <span class="tooltip">GitHub</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TECH STACK ============ -->
+    <!-- Edit the categories and tech names below to match your own stack.
+         Icons come from the Devicon CDN; any name works even without an icon. -->
+    <section id="tech-stack" class="section section-tech">
+      <div class="tech-inner">
+        <h2 class="section-title">Tech Stack</h2>
+
+        <div class="tech-category" id="tech-frontend">
+          <div class="tech-label">Frontend</div>
+          <div class="tech-grid">
+            <span class="tech-item" data-tag="JavaScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="" loading="lazy">JavaScript</span>
+            <span class="tech-item" data-tag="React"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="" loading="lazy">React</span>
+            <span class="tech-item" data-tag="TypeScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="" loading="lazy">TypeScript</span>
+            <span class="tech-item" data-tag="HTML"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="" loading="lazy">HTML</span>
+            <span class="tech-item" data-tag="CSS"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="" loading="lazy">CSS</span>
+          </div>
+        </div>
+
+        <div class="tech-category" id="tech-backend">
+          <div class="tech-label">Backend</div>
+          <div class="tech-grid">
+            <span class="tech-item" data-tag="Node.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="" loading="lazy">Node.js</span>
+            <span class="tech-item" data-tag="Python"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="" loading="lazy">Python</span>
+            <span class="tech-item" data-tag="FastAPI"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" alt="" loading="lazy">FastAPI</span>
+            <span class="tech-item" data-tag="Java"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="" loading="lazy">Java</span>
+          </div>
+        </div>
+
+        <div class="tech-category" id="tech-database">
+          <div class="tech-label">Database</div>
+          <div class="tech-grid">
+            <span class="tech-item" data-tag="PostgreSQL"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="" loading="lazy">PostgreSQL</span>
+            <span class="tech-item" data-tag="MongoDB"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="" loading="lazy">MongoDB</span>
+          </div>
+        </div>
+
+        <div class="tech-category" id="tech-tools">
+          <div class="tech-label">Tools</div>
+          <div class="tech-grid">
+            <span class="tech-item" data-tag="Git"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="" loading="lazy">Git</span>
+            <span class="tech-item" data-tag="GitHub"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="" loading="lazy">GitHub</span>
+            <span class="tech-item" data-tag="Docker"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="" loading="lazy">Docker</span>
+            <span class="tech-item" data-tag="Google Cloud"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg" alt="" loading="lazy">Google Cloud</span>
+            <span class="tech-item" data-tag="AWS"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="" loading="lazy">AWS</span>
+          </div>
+        </div>
+
+        <div class="tech-category" id="tech-gamedev">
+            <div class="tech-label">Game Development</div>
+            <div class="tech-grid">
+              <span class="tech-item" data-tag="C#"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg" alt="" loading="lazy">C#</span>
+              <span class="tech-item" data-tag="Unity"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/unity/unity-original.svg" alt="" loading="lazy">Unity</span>
+              <span class="tech-item" data-tag="Unreal Engine"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/unrealengine/unrealengine-original.svg" alt="" loading="lazy">Unreal Engine</span>
+              <span class="tech-item" data-tag="C++"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg" alt="" loading="lazy">C++</span>
+              <span class="tech-item" data-tag="Godot"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/godot/godot-original.svg" alt="" loading="lazy">Godot</span>
+              <span class="tech-item">GDScript</span>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ GITHUB ACTIVITY ============ -->
+    <!-- Stats come from the GitHub API. Set GITHUB_USERNAME in script.js;
+         until then the cards show placeholder values. -->
+    <section id="github-activity" class="section section-github">
+      <div class="github-inner">
+        <div class="text-center mb-12">
+          <h2 class="section-title">GitHub Activity</h2>
+          <p class="section-sub">My latest contributions and coding activity.</p>
+        </div>
+
+        <div class="github-stats">
+          <div class="github-stat-card glow-card">
+            <div class="github-stat-value" id="githubRepos">-</div>
+            <div class="github-stat-label">Public Repositories</div>
+          </div>
+          <div class="github-stat-card glow-card">
+            <div class="github-stat-value" id="githubStars">-</div>
+            <div class="github-stat-label">Total Stars</div>
+          </div>
+          <div class="github-stat-card glow-card">
+            <div class="github-stat-value" id="githubFollowers">-</div>
+            <div class="github-stat-label">Followers</div>
+          </div>
+          <div class="github-stat-card glow-card">
+            <div class="github-stat-value" id="githubCommits">-</div>
+            <div class="github-stat-label">Recent Commits</div>
+          </div>
+        </div>
+
+        <div class="github-panel glow-card">
+          <div class="github-panel-head">
+            <h3 class="accent">Recent Activity</h3>
+            <a href="https://github.com/" id="github-profile-link" target="_blank" rel="noopener" class="github-profile-link">View Profile</a>
+          </div>
+          <div id="githubActivity" class="github-activity">
+            <p class="github-placeholder">Loading activity...</p>
+          </div>
+        </div>
+
+        <div class="github-languages-head">
+          <h3 class="accent">Most Used Languages</h3>
+        </div>
+        <div class="github-languages" id="githubLanguages">
+          <p class="github-placeholder">Loading languages...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROJECTS ============ -->
+    <section id="projects" class="section section-projects">
+      <!-- Particles background -->
+      <div id="particles-projects" class="particles" aria-hidden="true"></div>
+
+      <div class="projects-inner">
+        <div class="text-center">
+          <h2 class="section-title">Projects</h2>
+          <p class="section-sub">Some of the things I've built.</p>
+        </div>
+
+        <p class="projects-notice" id="projects-notice" role="status" hidden></p>
+
+        <div class="projects-grid" id="projects-grid" hidden></div>
+
+        <div class="projects-empty" id="projects-empty">
+          <p class="empty-title">No projects yet</p>
+          <p class="empty-text">Your portfolio is ready for its first entry. Add projects with the admin tool (run <code>node server.js</code> and open <code>http://localhost:3000/admin/</code>), or drop entries straight into <code>projects.json</code> in this repository.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT FORM ============ -->
+    <!-- The form validates your message and opens your email client with the
+         message pre-filled (no backend needed). Your email address and social
+         links are filled from profile.json. -->
+    <section id="contact-form" class="section section-contact-form">
+      <div class="contact-form-inner">
+        <div class="text-center">
+          <h2 class="section-title">Get In Touch</h2>
+          <p class="section-sub">Let's discuss your next project or just say hello!</p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-info">
+            <h3 class="accent">Let's Connect</h3>
+            <p class="contact-info-text">I'm always open to discussing new opportunities, interesting projects, or just having a chat about technology and development.</p>
+            <p class="contact-info-text">I'm currently open for commissions for web development projects, or just simple sites, so hit me up.</p>
+
+            <div class="contact-detail">
+              <span class="contact-detail-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </span>
+              <div>
+                <p class="contact-detail-label">Email</p>
+                <p class="contact-detail-value" id="contact-email">you@example.com</p>
+              </div>
+            </div>
+
+            <div class="contact-detail">
+              <span class="contact-detail-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </span>
+              <div>
+                <p class="contact-detail-label">Location</p>
+                <p class="contact-detail-value" id="contact-location">Your City, Country</p>
+              </div>
+            </div>
+
+            <div class="contact-detail">
+              <span class="contact-detail-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </span>
+              <div>
+                <p class="contact-detail-label">Response Time</p>
+                <p class="contact-detail-value">Within 24 hours</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-form-card glow-card">
+            <form id="contactForm" class="contact-form" novalidate>
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="firstName">First Name <span class="required">*</span></label>
+                  <input type="text" id="firstName" name="firstName" required placeholder="Jane">
+                </div>
+                <div class="form-field">
+                  <label for="lastName">Last Name <span class="required">*</span></label>
+                  <input type="text" id="lastName" name="lastName" required placeholder="Doe">
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label for="email">Email <span class="required">*</span></label>
+                <input type="email" id="email" name="email" required placeholder="jane@example.com">
+              </div>
+
+              <div class="form-field">
+                <label for="subject">Subject <span class="required">*</span></label>
+                <select id="subject" name="subject" required>
+                  <option value="">Select a subject</option>
+                  <option value="project-inquiry">Project Inquiry</option>
+                  <option value="job-opportunity">Job Opportunity</option>
+                  <option value="collaboration">Collaboration</option>
+                  <option value="general">General Message</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label for="message">Message <span class="required">*</span></label>
+                <textarea id="message" name="message" rows="5" required placeholder="Tell me about your project or how I can help you..."></textarea>
+              </div>
+
+              <button type="submit" id="submitBtn" class="btn btn-gold btn-block">
+                <span id="submitText">Send Message</span>
+                <span id="submitLoading" hidden>Opening your email client...</span>
+              </button>
+            </form>
+
+            <div id="formMessage" class="form-message" hidden>
+              <p id="messageText"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section id="contact" class="section section-contact">
+      <div class="contact-inner">
+        <p class="section-sub">Let's connect and build something amazing!</p>
+        <!-- Emails and social buttons below are filled from profile.json. -->
+        <a href="mailto:you@example.com" class="contact-email" id="contact-email-link">you@example.com</a>
+        <div class="contact-buttons">
+          <a class="btn btn-gold" href="https://github.com/" target="_blank" rel="noopener">Visit GitHub</a>
+          <a class="btn btn-ghost" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>&TRADE; <span id="footer-year">2026</span> <span id="footer-name">Your Name</span>. Inspired by <a href="https://abhijeetbhale.github.io/Portfolio/" target="_blank" rel="noopener">Abhijeet Bhale</a>.</p>
+    </div>
+  </footer>
+
+  <!-- Back to top -->
+  <div class="wrapper">
+    <button class="back2top-button" id="backToTop" type="button">
+      <svg class="svgIcon" viewBox="0 0 384 512" aria-hidden="true">
+        <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/>
+      </svg>
+      <span class="button-label">Back to Top</span>
+    </button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

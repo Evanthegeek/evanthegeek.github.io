@@ -1,0 +1,30 @@
+# ---------- Node / tooling ----------
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-store/
+
+# ---------- Vite build output ----------
+app/dist/
+
+# ---------- Local-only admin uploads ----------
+# The admin tool (node server.js) writes uploaded photos here.
+assets/uploads/
+
+# ---------- Environment / secrets ----------
+.env
+.env.*
+!.env.example
+
+# ---------- OS junk ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- Editor folders ----------
+.vscode/
+.idea/
+
+# ---------- Local agent config (contains keys) ----------
+.agents/
+.freebuff/

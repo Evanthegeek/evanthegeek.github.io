@@ -1,0 +1,4 @@
+{
+  "_readme": "Projects shown on the portfolio site. Fields per entry: id (unique, optional - the admin tool fills it in), title, desc, tags (array of strings), url, source, image (URL or data URL). Edit this file by hand, or use the local admin tool (run 'node server.js' and open http://localhost:3000/admin).",
+  "projects": []
+}
