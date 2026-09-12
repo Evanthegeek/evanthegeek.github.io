@@ -23,7 +23,7 @@ const path = require("path");
 
 const ROOT = __dirname;
 const HOST = "127.0.0.1";
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = Number(process.env.PORT) || 9876;
 const MAX_BODY_BYTES = 20 * 1024 * 1024; // 20 MB (base64 photos included)
 
 const PROFILE_FILE = path.join(ROOT, "profile.json");

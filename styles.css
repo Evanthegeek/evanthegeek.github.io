@@ -8,8 +8,13 @@
    Gradients are used sparingly, and always tied to motion or the mouse:
    the hero's bottom fade, each section title's drawn-on underline, and the
    thin gold ring that follows the cursor around the edges of cards on hover.
-   Section seams blend with black-only tone ramps and a soft shadow, and the
-   seam lines light up silver when you hover into a section (never the bio).
+   Section seams blend with black-only tone ramps and a soft shadow. The page
+   then alternates: the pitch-black panels (hero, bio, projects, contact) are
+   left perfectly flat, while the near-black grey panels (tech, GitHub, the
+   contact form, the footer) take a whisper of film grain — barely noticeable,
+   just enough to read as paper. The content sections also carry a graph-paper
+   grid. Hovering lifts the whole panel a shade instead of flashing white
+   hairlines along its top and bottom seams.
    ========================================================================== */
 
 /* ---------- Design tokens ---------- */
@@ -24,13 +29,24 @@
   --gold-stroke: rgba(176, 141, 48, 0.75);  /* name-reveal outline */
   --terminal: #d9ae4f;   /* amber terminal text for the typing roles */
 
-  --bg: #000000;          /* deepest sections (hero, about, tech, projects) */
-  --bg-alt: #030303;      /* slightly lighter sections (github, contact form) */
+  --bg: #000000;          /* pitch-black panels (hero, bio, projects, contact) */
+  --bg-alt: #0a0a0a;      /* near-black grey: the grainy panels (tech, github,
+                             contact form, footer) */
   --surface: #000000;     /* cards are pitch black */
-  --surface-2: #030303;   /* nested rows / small surfaces */
+  --surface-2: #0a0a0a;   /* nested rows / small surfaces */
 
   --seam-shadow: rgba(0, 0, 0, 0.6);     /* black-only blend at section seams */
-  --seam-hover: rgba(228, 230, 238, 0.5); /* silver seam lines, shown on hover */
+
+  /* Grain + graph paper. --noise is a tiling film-grain tile (pale specks on
+     the dark theme, ink specks on the light theme) painted over every panel;
+     --noise-quiet is a much fainter cut of the same tile for cards and the
+     footer. Sections scale their grain with --grain, and most of them are 0. */
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g' x='0' y='0' width='200' height='200' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 2.2 0 0 0 -1.05'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+  --noise-quiet: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g' x='0' y='0' width='200' height='200' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.3 0 0 0 -0.145'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+  --grain-scale: 1;
+  --paper-minor: rgba(255, 255, 255, 0.09);
+  --paper-major: rgba(214, 191, 138, 0.24);
+  --wash: rgba(255, 255, 255, 0.045);      /* whole-panel lift on hover */
 
   --text: #ffffff;
   --text-soft: #d1d5db;
@@ -66,7 +82,15 @@
   --surface-2: #faf7f0;
 
   --seam-shadow: rgba(0, 0, 0, 0.18);   /* black-only blend at section seams */
-  --seam-hover: rgba(95, 98, 108, 0.42); /* silver seam lines, shown on hover */
+
+  /* Ink specks read stronger on cream, so the light theme keeps the same
+     grain at a lower scale. */
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g' x='0' y='0' width='200' height='200' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2.4 0 0 0 -1.15'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+  --noise-quiet: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g' x='0' y='0' width='200' height='200' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.35 0 0 0 -0.17'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+  --grain-scale: 0.85;
+  --paper-minor: rgba(26, 26, 26, 0.07);
+  --paper-major: rgba(122, 94, 25, 0.24);
+  --wash: rgba(255, 255, 255, 0.4);        /* whole-panel lift on hover */
 
   --text: #1a1a1a;
   --text-soft: #44403a;
@@ -350,26 +374,24 @@ img {
   box-shadow: 0 0 18px var(--gold-glow);
 }
 
+/* Iconography: a hand-drafted technical set built on a 24px grid — 1.5px
+   hairlines, square caps and mitre joins. Squared-off strokes read like a
+   drafting pen, which keeps the glyphs away from the rounded 2px outline
+   style that every generated icon set (Feather/Lucide/Heroicons) ships. */
 .theme-toggle svg {
-  width: 19px;
-  height: 19px;
+  width: 20px;
+  height: 20px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.theme-toggle .icon-moon {
-  display: none;
-}
-
-[data-theme="light"] .theme-toggle .icon-sun {
-  display: none;
-}
-
-[data-theme="light"] .theme-toggle .icon-moon {
-  display: block;
+/* Flipping the theme swings the filled half of the disc over. */
+[data-theme="light"] .theme-toggle svg {
+  transform: rotate(180deg);
 }
 
 /* ---------- Hero ---------- */
@@ -426,7 +448,7 @@ img {
      readable, while the rest of the hero effect stays fully visible.
      The fill follows the theme (black in dark, cream in light) so the
      block stays subtle in both. */
-  background: color-mix(in srgb, var(--bg) 45%, transparent);
+  background-color: color-mix(in srgb, var(--bg) 45%, transparent);
   border: 1px solid var(--border-weak);
   border-radius: 24px;
   padding: 2.2rem 2.8rem;
@@ -573,43 +595,76 @@ img {
   /* Black-only blend at the top seam: a soft shadow darkens the section's
      first ~28px so adjoining sections melt together with no colour. */
   box-shadow: inset 0 26px 30px -28px var(--seam-shadow);
+  /* Both texture overlays below sit at z-index:-1. isolate makes the section
+     its own stacking context so they land above the section background
+     (ramp gradients included) and below every bit of content. */
+  isolation: isolate;
 }
 
-/* Silver seam lines: the boundaries between this section and its neighbours
-   light up when you hover into the section. Hidden by default; the bio
-   section never shows them (see .section-about below). */
-.section::before,
+/* Grain: a whisper of noise across a panel, tuned per section through --grain.
+   Almost every section sets it to 0 (pitch black); only the near-black grey
+   panels are textured. Hovering thickens it a touch. */
+.section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--noise);
+  background-size: 200px 200px;
+  background-repeat: repeat;
+  opacity: calc(var(--grain, 0) * var(--grain-scale));
+  transition: opacity 0.4s ease;
+}
+
+.section:hover::before {
+  opacity: calc(var(--grain, 0) * var(--grain-scale) * 1.3);
+}
+
+/* Graph paper on the content sections, plus the hover wash on every panel.
+   The grid fades out towards the seams so it never fights the section ramps. */
 .section::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--seam-hover);
-  box-shadow: 0 0 12px 1px var(--seam-hover), 0 0 26px 3px var(--seam-hover);
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  inset: 0;
+  z-index: -1;
   pointer-events: none;
+  background-color: transparent;
+  background-image: var(--paper-grid, none);
+  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+  background-repeat: repeat;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 9rem,
+    #000 calc(100% - 9rem), transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 9rem,
+    #000 calc(100% - 9rem), transparent);
+  transition: background-color 0.4s ease;
 }
 
-.section::before {
-  top: 0;
-}
-
-.section::after {
-  bottom: 0;
-}
-
-.section:hover::before,
+/* Instead of white hairlines lighting up at the top and bottom of a section,
+   the whole panel lifts a shade (and, via ::before, gains more grain). */
 .section:hover::after {
-  opacity: 1;
+  background-color: var(--wash);
 }
 
-/* The bio section gets no hover seam glow at all. */
-.section-about::before,
-.section-about::after {
-  display: none;
+/* Graph paper: a 24px minor grid with a heavier line every fifth square. */
+.paper {
+  --paper-grid:
+    linear-gradient(to right, var(--paper-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--paper-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--paper-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--paper-minor) 1px, transparent 1px);
 }
+
+/* Which panels are textured. The pitch-black ones carry no grain at all; the
+   near-black grey ones get just enough to read as paper rather than flat fill.
+   The hero and the bio sit on the black end, so nothing is grainy above the
+   fold or in the section right below it. */
+.section-about        { --grain: 0; }      /* pitch black */
+.section-projects     { --grain: 0; }      /* pitch black */
+.section-contact      { --grain: 0; }      /* pitch black */
+.section-tech         { --grain: 0.10; }   /* near-black grey */
+.section-github       { --grain: 0.11; }
+.section-contact-form { --grain: 0.085; }
 
 .section-title {
   font-family: "Special Gothic Expanded One", sans-serif;
@@ -859,6 +914,16 @@ img {
   width: 22px;
   height: 22px;
   fill: currentColor;
+}
+
+/* The envelope in the social row is drawn like the rest of the icon set
+   (hairline strokes, not a solid brand mark). */
+.social-icons .icon-content a svg.icon-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
 }
 
 .social-icons .icon-content a .filled {
@@ -1541,7 +1606,7 @@ img {
 /* Pitch-black project cards in the dark theme (light theme keeps its light
    cards so the cream sections stay readable). */
 [data-theme="dark"] .project-card {
-  background: #000000;
+  background-color: #000000;
   color: var(--text-soft);
   border: 1px solid rgba(255, 255, 255, 0.14);
 }
@@ -1647,26 +1712,35 @@ img {
   margin-bottom: 1.3rem;
 }
 
+/* Outlined square chips rather than filled gold circles — closer to a spec
+   sheet than a template. */
 .contact-detail-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--gold);
-  color: var(--gold-ink);
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--gold);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.contact-detail:hover .contact-detail-icon {
+  border-color: var(--gold);
+  color: var(--gold-strong);
 }
 
 .contact-detail-icon svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
 }
 
 .contact-detail-label {
@@ -1898,20 +1972,19 @@ img {
 }
 
 .svgIcon {
-  width: 13px;
-  transition: transform 0.3s ease;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.7;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  transition: transform 0.3s ease, stroke 0.3s ease;
 }
 
 .back2top-button:hover .svgIcon {
   transform: translateY(-230%);
-}
-
-.svgIcon path {
-  fill: var(--text);
-}
-
-.back2top-button:hover .svgIcon path {
-  fill: var(--gold-ink);
+  stroke: var(--gold-ink);
 }
 
 .button-label {
@@ -1929,6 +2002,23 @@ img {
   font-size: 13px;
   opacity: 1;
   bottom: unset;
+}
+
+/* ---------- Surfaces take the grain too ------------------------------------
+   Cards and the footer sit inside the near-black grey panels, so they get the
+   same noise at a whisper of the panel strength. Declared after every card
+   rule so a background shorthand can't wipe it out. */
+
+.site-footer,
+.github-stat-card,
+.github-panel,
+.github-lang-card,
+.timeline-card,
+.contact-form-card,
+.project-card {
+  background-image: var(--noise-quiet);
+  background-size: 200px 200px;
+  background-repeat: repeat;
 }
 
 /* ---------- Scroll reveal ---------- */
